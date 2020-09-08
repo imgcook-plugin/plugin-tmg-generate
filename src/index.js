@@ -41,11 +41,11 @@ function collectImports(imports, panelImports) {
 }
 
 function collectBaseImports(imports, panelBaseImports) {
-  if(panelBaseImports && panelBaseImports.length) {
+  if (panelBaseImports && panelBaseImports.length) {
     imports.push({
       package: "@ali/pcom-import-base",
       version: "*",
-    })
+    });
   }
 }
 
@@ -87,7 +87,6 @@ function calcuPackageJSONPanel(packageJSONPath, imports) {
       }
     });
 
-    
     if (flag) {
       return {
         panelPath: packageJSONPath,
@@ -157,7 +156,12 @@ const pluginHandler = async (options) => {
   let imports = [];
   data.code.panelDisplay = panelDisplay.map((item) => {
     try {
-      let { panelName, panelValue, panelImports = [], panelBaseImports = [] } = item;
+      let {
+        panelName,
+        panelValue,
+        panelImports = [],
+        panelBaseImports = [],
+      } = item;
       let panelPath = "";
       const fileName = panelName.split(".")[0];
       const fileType = util.optiFileType(
@@ -166,16 +170,12 @@ const pluginHandler = async (options) => {
         projectType
       );
       panelName = `${fileName}.${fileType}`;
-      if (fileName !== "index" && fileName !== "context") {
-        panelPath = path.resolve(
-          exportDirs.code,
-          "components",
-          fileName,
-          `index.${fileType}`
-        );
-      } else {
-        panelPath = path.resolve(exportDirs.code, `${fileName}.${fileType}`);
-      }
+      // if (fileName !== "index" && fileName !== "context") {
+      // 默认在生成路径下，生成pageName的文件夹
+      panelPath = path.resolve(exportDirs.code, pageName, `index.${fileType}`);
+      // } else {
+      //   panelPath = path.resolve(exportDirs.code, `${fileName}.${fileType}`);
+      // }
       panelValue = replaceCssImport(panelValue, fileName);
       panelValue = replaceLocalImports(panelValue, panelImports, fileName);
       imports = collectImports(imports, panelImports);
@@ -191,7 +191,6 @@ const pluginHandler = async (options) => {
 
   // 解析是否要写入 package.json
   if (exportDirs.packagejson) {
-
     const pkgPanel = calcuPackageJSONPanel(exportDirs.packagejson, imports);
     if (pkgPanel) {
       data.code.panelDisplay.push(pkgPanel);

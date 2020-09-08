@@ -1,33 +1,33 @@
-const fs = require('fs-extra');
-const path = require('path');
-const { PROJECT_TYPE } = require('./constant');
+const fs = require("fs-extra");
+const path = require("path");
+const { PROJECT_TYPE } = require("./constant");
 
 /**
  * 计算项目类型
  * @param {*} projectPath
  */
 function calcuProjectType(projectPath) {
-  const projectBuildPath = path.join(projectPath, 'build.json');
-  const projectABCPath = path.join(projectPath, 'abc.json');
+  const projectBuildPath = path.join(projectPath, "build.json");
+  const projectABCPath = path.join(projectPath, "abc.json");
   if (fs.existsSync(projectBuildPath)) {
     try {
       const jsonString = fs.readFileSync(projectBuildPath).toString();
-      if (jsonString.indexOf('@ali/build-plugin-pegasus-base') > -1) {
+      if (jsonString.indexOf("@ali/build-plugin-pegasus-base") > -1) {
         return PROJECT_TYPE.Rax1TBEMod;
       }
     } catch (e) {
-      console.error('解析 build.json 出错');
+      console.error("解析 build.json 出错");
     }
   } else if (fs.existsSync(projectABCPath)) {
     try {
       const json = JSON.parse(fs.readFileSync(projectABCPath).toString());
-      if (json.builder && typeof json.builder === 'string') {
-        if (json.type === 'tbe-mod') {
+      if (json.builder && typeof json.builder === "string") {
+        if (json.type === "tbe-mod") {
           return PROJECT_TYPE.Rax1TBEMod;
         }
       }
     } catch (e) {
-      console.error('解析 abc.json 出错');
+      console.error("解析 abc.json 出错");
     }
   }
   return PROJECT_TYPE.Other;
@@ -40,25 +40,36 @@ function calcuProjectType(projectPath) {
  * @param {*} pageName
  * @param {*} projectType
  */
-function calcuExportDirectory(workspaceFolder, filePath, pageName, projectType) {
+function calcuExportDirectory(
+  workspaceFolder,
+  filePath,
+  pageName,
+  projectType
+) {
   let exportDirs = {
     code: path.resolve(filePath, pageName),
-    packagejson: path.resolve(workspaceFolder, 'package.json'),
-    appjson: ''
+    packagejson: path.resolve(workspaceFolder, "package.json"),
+    appjson: "",
   };
 
   switch (projectType.type) {
     case PROJECT_TYPE.Rax1TBEMod.type: {
+      // pageDir 获取默认的模块生成路径，模块为src/mobile/components, 组件为src/
+      // 先判断mobile文件夹是否存在，存在就是天马模块。不然就是天马组件
       // 天马模块目录
-      let pageDir = path.resolve(workspaceFolder, 'src/mobile');
+      let pageDir = path.resolve(workspaceFolder, "src/mobile");
       if (!fs.pathExistsSync(pageDir)) {
         // 天马组件目录
-        pageDir = path.resolve(workspaceFolder, 'src');
+        pageDir = path.resolve(workspaceFolder, "src");
+      } else {
+        pageDir = path.resolve(pageDir, "components");
       }
+      // 当打开imgcook编辑的workspace文件夹为项目文件根目录或正好是生成的默认路径时，生成的代码路径直接使用。
       if (workspaceFolder === filePath || pageDir === filePath) {
         exportDirs.code = pageDir;
       } else {
-        exportDirs.code = path.resolve(filePath, pageName);
+        // 否则直接在路径下创建
+        exportDirs.code = path.resolve(filePath);
       }
       break;
     }
@@ -78,15 +89,20 @@ function calcuExportDirectory(workspaceFolder, filePath, pageName, projectType) 
  * @param {*} projectType
  */
 function optiFileType(workspaceFolder, fileType, projectType) {
-  const isTSProject = fs.pathExistsSync(path.join(workspaceFolder, 'tsconfig.json'));
+  const isTSProject = fs.pathExistsSync(
+    path.join(workspaceFolder, "tsconfig.json")
+  );
   if (isTSProject) {
-    if (fileType === 'js') {
-      return 'ts';
+    if (fileType === "js") {
+      return "ts";
     }
-    if (fileType === 'jsx') {
-      return 'tsx';
+    if (fileType === "jsx") {
+      return "tsx";
     }
-  } else if (['js', 'jsx'].indexOf(fileType) > -1 && projectType.type !== 'other') {
+  } else if (
+    ["js", "jsx"].indexOf(fileType) > -1 &&
+    projectType.type !== "other"
+  ) {
     return projectType.jsType;
   }
   return fileType;
@@ -117,7 +133,7 @@ function calcuWorkspaceInfo(workspaceFolders, filePath) {
   if (!result) {
     result = {};
     result.workspaceFolder = filePath;
-    result.workspaceName = filePath.substr(filePath.lastIndexOf('/') + 1);
+    result.workspaceName = filePath.substr(filePath.lastIndexOf("/") + 1);
     result.filePath = filePath;
   }
   return result;
@@ -128,5 +144,5 @@ module.exports = {
   calcuProjectType,
   calcuWorkspaceInfo,
   calcuExportDirectory,
-  optiFileType
+  optiFileType,
 };
