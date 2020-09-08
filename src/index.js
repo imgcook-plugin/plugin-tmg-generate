@@ -40,6 +40,15 @@ function collectImports(imports, panelImports) {
     .concat(imports);
 }
 
+function collectBaseImports(imports, panelBaseImports) {
+  if(panelBaseImports && panelBaseImports.length) {
+    imports.push({
+      package: "@ali/pcom-import-base",
+      version: "*",
+    })
+  }
+}
+
 function getPageName(data) {
   if (data && data.moduleData) {
     if (data.moduleData.name) {
@@ -148,7 +157,7 @@ const pluginHandler = async (options) => {
   let imports = [];
   data.code.panelDisplay = panelDisplay.map((item) => {
     try {
-      let { panelName, panelValue, panelImports = [] } = item;
+      let { panelName, panelValue, panelImports = [], panelBaseImports = [] } = item;
       let panelPath = "";
       const fileName = panelName.split(".")[0];
       const fileType = util.optiFileType(
@@ -170,7 +179,7 @@ const pluginHandler = async (options) => {
       panelValue = replaceCssImport(panelValue, fileName);
       panelValue = replaceLocalImports(panelValue, panelImports, fileName);
       imports = collectImports(imports, panelImports);
-      imports = collectImports(imports, panelBaseImports);
+      imports = collectBaseImports(imports, panelBaseImports);
       return {
         ...item,
         panelName,

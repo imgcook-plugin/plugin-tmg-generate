@@ -1,5 +1,5 @@
 {
-  "name": "@imgcook/plugin-template",
+  "name": "@imgcook/plugin-tmg-generate",
   "version": "0.0.1",
   "description": "plugin template",
   "main": "index.js",
@@ -8,17 +8,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/imgcook-plugin/plugin-template.git"
+    "url": "git+https://github.com/imgcook-plugin/plugin-tmg-generate.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/imgcook-plugin/plugin-template/issues"
+    "url": "https://github.com/imgcook-plugin/plugin-tmg-generate/issues"
   },
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/imgcook-plugin/plugin-template#readme",
+  "homepage": "https://github.com/imgcook-plugin/plugin-tmg-generate#readme",
   "devDependencies": {
     "chai": "^4.2.0",
     "nyc": "^14.1.1"
