@@ -47,6 +47,7 @@ function collectBaseImports(imports, panelBaseImports) {
       version: "*",
     });
   }
+  return imports;
 }
 
 function getPageName(data) {
@@ -78,6 +79,7 @@ function calcuPackageJSONPanel(packageJSONPath, imports) {
     if (!json.devDependencies) {
       json.devDependencies = {};
     }
+
     imports.forEach((item) => {
       const name = item.package;
       const version = item.version || "*";
@@ -178,6 +180,7 @@ const pluginHandler = async (options) => {
       // }
       panelValue = replaceCssImport(panelValue, fileName);
       panelValue = replaceLocalImports(panelValue, panelImports, fileName);
+
       imports = collectImports(imports, panelImports);
       imports = collectBaseImports(imports, panelBaseImports);
       return {
@@ -192,6 +195,7 @@ const pluginHandler = async (options) => {
   // 解析是否要写入 package.json
   if (exportDirs.packagejson) {
     const pkgPanel = calcuPackageJSONPanel(exportDirs.packagejson, imports);
+
     if (pkgPanel) {
       data.code.panelDisplay.push(pkgPanel);
     }
@@ -209,7 +213,7 @@ const pluginHandler = async (options) => {
   data.code.codeDiff = true;
   options.workspaceFolder = workspaceFolder;
   console.log("[@imgcook/plugin-tmg-generate] options:");
-  console.log(JSON.stringify(options));
+  console.log(options);
 
   return options;
 };

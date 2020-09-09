@@ -79,6 +79,7 @@ describe("index.js", () => {
       },
     ];
     rdata = await index(rdata);
+
     const { data, filePath, config } = rdata;
 
     expect(data).to.be.an("object");
