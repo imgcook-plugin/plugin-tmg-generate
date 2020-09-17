@@ -174,7 +174,7 @@ const pluginHandler = async (options) => {
       panelName = `${fileName}.${fileType}`;
       // if (fileName !== "index" && fileName !== "context") {
       // 默认在生成路径下，生成pageName的文件夹
-      panelPath = path.resolve(exportDirs.code, pageName, `index.${fileType}`);
+      panelPath = path.resolve(exportDirs.code, `index.${fileType}`);
       // } else {
       //   panelPath = path.resolve(exportDirs.code, `${fileName}.${fileType}`);
       // }

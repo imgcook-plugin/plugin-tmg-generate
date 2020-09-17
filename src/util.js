@@ -62,7 +62,7 @@ function calcuExportDirectory(
         // 天马组件目录
         pageDir = path.resolve(workspaceFolder, "src");
       } else {
-        pageDir = path.resolve(pageDir, "components");
+        pageDir = path.resolve(pageDir, "components", pageName);
       }
       // 当打开imgcook编辑的workspace文件夹为项目文件根目录或正好是生成的默认路径时，生成的代码路径直接使用。
       if (workspaceFolder === filePath || pageDir === filePath) {
